@@ -1,17 +1,20 @@
 fun main() {
     fun part1(input: List<String>): Int {
-        return input.size
+        return input.groupNonEmptyItems()
+            .map { calories -> calories.fold(0) { acc, cal -> acc + cal.toInt() } }
+            .maxOf { it }
     }
-
-    fun part2(input: List<String>): Int {
-        return input.size
-    }
-
-    // test if implementation meets criteria from the description, like:
-    val testInput = readInput("Day01_test")
-    check(part1(testInput) == 1)
 
     val input = readInput("Day01")
-    part1(input).println()
-    part2(input).println()
+    part1(input).println() // 68787
 }
+
+fun List<String>.groupNonEmptyItems() = fold(ArrayList<MutableList<String>>()) { list, item ->
+    list.apply {
+        if (item.isBlank() || list.isEmpty()) {
+            add(mutableListOf())
+        } else {
+            last().add(item)
+        }
+    }
+}.map { it.toList() }
